@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EdSpresso — Cafenea de specialitate</title>
+  <meta name="description" content="EdSpresso — cafenea de specialitate. Timpul curge doar când derulezi: urmărește un shot de espresso extras în 28 de secunde, direct în ceașca ta." />
+  <meta name="theme-color" content="#0a0807" />
+  <meta property="og:title" content="EdSpresso — Timpul curge doar când derulezi" />
+  <meta property="og:description" content="Cafenea de specialitate. Un shot perfect, extras sub ochii tăi." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Manrope:wght@300..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js",
+      "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/",
+      "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.mjs"
+    }
+  }
+  </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" crossorigin />
+</head>
+<body class="is-loading">
+  <!-- ========== PRELOADER ========== -->
+  <div class="loader" id="loader" aria-live="polite">
+    <div class="loader__inner">
+      <div class="loader__mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" /><path d="M24 20h17M24 32h13M24 44h17M24 20v24" /></svg>
+      </div>
+      <p class="loader__status"><span id="loaderStatus">Măcinăm boabele</span><span class="loader__dots">…</span></p>
+      <div class="loader__bar"><span id="loaderBar"></span></div>
+      <p class="loader__pct"><span id="loaderPct">0</span>%</p>
+    </div>
+  </div>
+
+  <!-- ========== WEBGL ========== -->
+  <canvas class="webgl" id="webgl" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ========== CURSOR ========== -->
+  <div class="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header" id="header">
+    <a href="#hero" class="logo" data-scroll-to aria-label="EdSpresso — acasă">
+      <svg class="logo__mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" /><path d="M24 20h17M24 32h13M24 44h17M24 20v24" /></svg>
+      <span class="logo__word">Ed<em>Spresso</em></span>
+    </a>
+    <nav class="nav" aria-label="Navigare principală">
+      <a href="#extractie" data-scroll-to>Extracția</a>
+      <a href="#poveste" data-scroll-to>Povestea</a>
+      <a href="#origini" data-scroll-to>Origini</a>
+      <a href="#meniu" data-scroll-to>Meniu</a>
+      <a href="#vizita" data-scroll-to>Vizită</a>
+    </nav>
+    <div class="header__actions">
+      <span class="sound-hint" id="soundHint">Click oriunde pentru sunet</span>
+      <button class="sound-toggle" id="soundToggle" aria-label="Oprește / pornește sunetul" aria-pressed="true" data-cursor="Mute">
+        <span></span><span></span><span></span><span></span>
+      </button>
+      <a href="#vizita" class="btn btn--small btn--gold" data-scroll-to data-magnetic><span>Rezervă</span></a>
+      <button class="burger" id="burger" aria-label="Deschide meniul" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <nav>
+      <a href="#extractie" data-scroll-to>Extracția</a>
+      <a href="#poveste" data-scroll-to>Povestea</a>
+      <a href="#origini" data-scroll-to>Origini</a>
+      <a href="#meniu" data-scroll-to>Meniu</a>
+      <a href="#vizita" data-scroll-to>Vizită</a>
+    </nav>
+    <p>Strada Boabelor 7 · Cluj-Napoca</p>
+  </div>
+
+  <!-- ========== HUD ========== -->
+  <aside class="hud" aria-label="Date extracție live">
+    <div class="hud__row"><span>Extracție</span><b id="hudTime">00:00.0</b></div>
+    <div class="hud__row"><span>Presiune</span><b id="hudBar">0.0 bar</b></div>
+    <div class="hud__row"><span>În ceașcă</span><b id="hudYield">0.0 g</b></div>
+    <div class="hud__state" id="hudState"><i></i><span>Timp oprit</span></div>
+  </aside>
+  <div class="fill-meter" aria-hidden="true"><span id="fillMeter"></span></div>
+
+  <main id="smooth">
+    <!-- HERO -->
+    <section class="section hero" id="hero" data-cam="hero">
+      <div class="hero__content">
+        <p class="eyebrow" data-reveal>Cafenea de specialitate · Cluj-Napoca</p>
+        <h1 class="hero__title">
+          <span class="line"><span data-hero-line>Timpul curge</span></span>
+          <span class="line"><span data-hero-line><em>doar când</em> derulezi.</span></span>
+        </h1>
+        <p class="hero__lead" data-reveal>Un shot de espresso durează 28 de secunde. Aici, tu controlezi fiecare picătură — derulează și cafeaua curge, oprește-te și timpul îngheață.</p>
+        <div class="hero__ctas" data-reveal>
+          <a href="#meniu" class="btn btn--gold" data-scroll-to data-magnetic><span>Vezi meniul</span></a>
+          <a href="#extractie" class="btn btn--ghost" data-scroll-to data-magnetic><span>Pornește extracția</span></a>
+        </div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true">
+        <span>Derulează ca să extragi</span>
+        <i></i>
+      </div>
+    </section>
+
+    <!-- EXTRACTIE -->
+    <section class="section extract" id="extractie" data-cam="stream">
+      <div class="container container--right">
+        <p class="eyebrow" data-reveal>01 — Extracția</p>
+        <h2 class="h2" data-split>Nouă bari de presiune. <em>Zero grabă.</em></h2>
+        <p class="lead" data-reveal>Calibrăm moara în fiecare dimineață, până când fiecare shot curge ca mierea: întunecat la început, cu dungi aurii la final.</p>
+        <ul class="stats">
+          <li data-reveal><b><span data-count="18">0</span><small>g</small></b><span>cafea măcinată</span></li>
+          <li data-reveal><b><span data-count="9">0</span><small>bar</small></b><span>presiune constantă</span></li>
+          <li data-reveal><b><span data-count="93">0</span><small>°C</small></b><span>temperatura apei</span></li>
+          <li data-reveal><b><span data-count="36">0</span><small>g</small></b><span>în ceașcă, în 28 s</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- POVESTE -->
+    <section class="section story" id="poveste" data-cam="wide">
+      <div class="container container--left">
+        <p class="eyebrow" data-reveal>02 — Povestea</p>
+        <p class="manifesto" data-scrub-words>Nu ne grăbim. Măcinăm la comandă, cântărim fiecare doză și servim doar cafeaua pe care am bea-o noi înșine. EdSpresso a pornit dintr-o singură întrebare: ce-ar fi dacă fiecare ceașcă ar avea timpul ei?</p>
+        <div class="signature" data-reveal>
+          <span class="signature__name">Edy</span>
+          <span class="signature__role">Fondator &amp; barista-șef</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORIGINI -->
+    <section class="section origins" id="origini" data-cam="beans">
+      <div class="container container--right">
+        <p class="eyebrow" data-reveal>03 — Origini</p>
+        <h2 class="h2" data-split>Trei ferme. <em>O singură obsesie.</em></h2>
+        <div class="origin-list">
+          <article class="origin" data-tilt data-reveal>
+            <header><span class="origin__num">ET</span><h3>Etiopia · Yirgacheffe</h3></header>
+            <p class="origin__meta">1.950–2.200 m · spălată · heirloom</p>
+            <p class="origin__notes"><span>iasomie</span><span>bergamotă</span><span>piersică albă</span></p>
+            <div class="origin__bar"><i style="--v:.35"></i><em>Prăjire deschisă</em></div>
+          </article>
+          <article class="origin" data-tilt data-reveal>
+            <header><span class="origin__num">CO</span><h3>Columbia · Huila</h3></header>
+            <p class="origin__meta">1.700 m · honey · caturra</p>
+            <p class="origin__notes"><span>caramel</span><span>cireșe roșii</span><span>cacao</span></p>
+            <div class="origin__bar"><i style="--v:.55"></i><em>Prăjire medie</em></div>
+          </article>
+          <article class="origin" data-tilt data-reveal>
+            <header><span class="origin__num">BR</span><h3>Brazilia · Cerrado</h3></header>
+            <p class="origin__meta">1.100 m · naturală · bourbon galben</p>
+            <p class="origin__notes"><span>ciocolată cu lapte</span><span>alune</span><span>melasă</span></p>
+            <div class="origin__bar"><i style="--v:.72"></i><em>Prăjire medie-închisă</em></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee">
+        <span>Espresso <i>✦</i> Flat White <i>✦</i> Cortado <i>✦</i> V60 <i>✦</i> Cold Brew <i>✦</i> Affogato <i>✦</i> </span>
+        <span>Espresso <i>✦</i> Flat White <i>✦</i> Cortado <i>✦</i> V60 <i>✦</i> Cold Brew <i>✦</i> Affogato <i>✦</i> </span>
+      </div>
+    </div>
+
+    <!-- MENIU -->
+    <section class="section menu" id="meniu" data-cam="cup">
+      <div class="container container--left">
+        <p class="eyebrow" data-reveal>04 — Meniu</p>
+        <h2 class="h2" data-split>Ce extragem <em>azi.</em></h2>
+        <div class="menu__tabs" role="tablist">
+          <button class="is-active" role="tab" aria-selected="true" data-tab="bar">Espresso bar</button>
+          <button role="tab" aria-selected="false" data-tab="filtru">Filtru</button>
+          <button role="tab" aria-selected="false" data-tab="casa">Semnătura casei</button>
+          <button role="tab" aria-selected="false" data-tab="dulce">Dulce</button>
+        </div>
+        <div class="menu__panels">
+          <ul class="menu__list is-active" data-panel="bar">
+            <li data-cursor="18 g"><span class="menu__name">Espresso</span><span class="menu__desc">single origin, 28 s</span><span class="menu__price">12</span></li>
+            <li data-cursor="36 g"><span class="menu__name">Doppio</span><span class="menu__desc">dublu, pentru dimineți lungi</span><span class="menu__price">15</span></li>
+            <li data-cursor="Mic"><span class="menu__name">Cortado</span><span class="menu__desc">espresso și lapte în părți egale</span><span class="menu__price">16</span></li>
+            <li data-cursor="Catifea"><span class="menu__name">Flat White</span><span class="menu__desc">microspumă fină, dublu shot</span><span class="menu__price">18</span></li>
+            <li data-cursor="Clasic"><span class="menu__name">Cappuccino</span><span class="menu__desc">cu inimă desenată de mână</span><span class="menu__price">17</span></li>
+          </ul>
+          <ul class="menu__list" data-panel="filtru">
+            <li data-cursor="V60"><span class="menu__name">V60 · Etiopia</span><span class="menu__desc">floral, curat, luminos</span><span class="menu__price">22</span></li>
+            <li data-cursor="Pt. doi"><span class="menu__name">Chemex</span><span class="menu__desc">500 ml, de împărțit</span><span class="menu__price">38</span></li>
+            <li data-cursor="18 h"><span class="menu__name">Cold Brew</span><span class="menu__desc">infuzat 18 ore la rece</span><span class="menu__price">20</span></li>
+          </ul>
+          <ul class="menu__list" data-panel="casa">
+            <li data-cursor="Top"><span class="menu__name">EdSpresso Tonic</span><span class="menu__desc">espresso, tonic, coajă de portocală</span><span class="menu__price">22</span></li>
+            <li data-cursor="Nou"><span class="menu__name">Ovăz &amp; miere</span><span class="menu__desc">latte cu lapte de ovăz și miere de salcâm</span><span class="menu__price">21</span></li>
+            <li data-cursor="Rece"><span class="menu__name">Affogato</span><span class="menu__desc">înghețată de vanilie înecată în espresso</span><span class="menu__price">20</span></li>
+          </ul>
+          <ul class="menu__list" data-panel="dulce">
+            <li data-cursor="Cald"><span class="menu__name">Croissant cu unt</span><span class="menu__desc">copt la 7:00 în fiecare zi</span><span class="menu__price">12</span></li>
+            <li data-cursor="Verde"><span class="menu__name">Tartă cu fistic</span><span class="menu__desc">cremă de fistic sicilian</span><span class="menu__price">19</span></li>
+            <li data-cursor="Ars"><span class="menu__name">Cheesecake basc</span><span class="menu__desc">caramelizat, cremos la mijloc</span><span class="menu__price">22</span></li>
+          </ul>
+        </div>
+        <p class="menu__note" data-reveal>Prețuri în lei. Lapte vegetal fără cost suplimentar.</p>
+      </div>
+    </section>
+
+    <!-- VIZITA -->
+    <section class="section visit" id="vizita" data-cam="top">
+      <div class="visit__grid">
+        <div class="visit__col">
+          <p class="eyebrow" data-reveal>05 — Vizită</p>
+          <h2 class="h2" data-split>Ceașca ta <em>e plină.</em></h2>
+          <p class="lead" data-reveal>Acum e rândul tău. Te așteptăm la bar — prima extracție e din partea casei dacă ne spui că ai derulat până aici.</p>
+          <div class="hero__ctas" data-reveal>
+            <a href="tel:+40700000000" class="btn btn--gold" data-magnetic><span>Rezervă o masă</span></a>
+            <a href="https://maps.google.com/?q=Cluj-Napoca" target="_blank" rel="noopener" class="btn btn--ghost" data-magnetic><span>Indicații</span></a>
+          </div>
+        </div>
+        <div class="visit__col visit__col--info">
+          <dl class="info" data-reveal>
+            <div><dt>Adresă</dt><dd>Strada Boabelor 7<br />Cluj-Napoca</dd></div>
+            <div><dt>Program</dt><dd>Luni–Vineri · 07:30–19:00<br />Weekend · 09:00–18:00</dd></div>
+            <div><dt>Contact</dt><dd><a href="mailto:salut@edspresso.ro">salut@edspresso.ro</a><br />+40 700 000 000</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" data-cam="top">
+    <div class="footer__top">
+      <form class="newsletter" id="newsletter" novalidate>
+        <label for="nlEmail">Cafeaua lunii, direct în inbox</label>
+        <div class="newsletter__row">
+          <input id="nlEmail" type="email" placeholder="adresa@email.ro" autocomplete="email" required />
+          <button type="submit" class="btn btn--gold btn--small" data-magnetic><span>Abonează-mă</span></button>
+        </div>
+        <p class="newsletter__msg" id="nlMsg" role="status"></p>
+      </form>
+      <nav class="footer__nav" aria-label="Social">
+        <a href="#" data-cursor="IG">Instagram</a>
+        <a href="#" data-cursor="TT">TikTok</a>
+        <a href="#" data-cursor="Maps">Google Maps</a>
+      </nav>
+    </div>
+    <div class="footer__word" aria-hidden="true">Ed<em>Spresso</em></div>
+    <div class="footer__bottom">
+      <span>© 2026 EdSpresso. Concept &amp; design: Edy.</span>
+      <a href="#hero" data-scroll-to>Înapoi sus ↑</a>
+    </div>
+  </footer>
+
+  <noscript><p class="noscript">Activează JavaScript pentru experiența completă EdSpresso.</p></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

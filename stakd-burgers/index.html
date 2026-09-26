@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>STAKD — The smash burger, taken seriously</title>
+  <meta name="description" content="STAKD. Forty-five-day dry-aged chuck, brioche baked at five in the morning, a 260°C flat-top and ten seconds of smash. Scroll to deconstruct." />
+  <meta name="theme-color" content="#0c0a09" />
+  <meta property="og:title" content="STAKD — The smash burger, taken seriously" />
+  <meta property="og:description" content="Nine layers. No filler. Scroll to take one apart." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=Big+Shoulders+Display:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js",
+      "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/",
+      "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.mjs"
+    }
+  }
+  </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" crossorigin />
+</head>
+<body class="is-loading">
+  <!-- ========== LOADER ========== -->
+  <div class="loader" id="loader">
+    <div class="loader__mark">STAKD</div>
+    <p class="loader__text"><span id="loaderText">Firing the flat-top</span></p>
+    <div class="loader__row"><div class="loader__bar"><span id="loaderBar"></span></div><span class="loader__pct" id="loaderPct">000</span></div>
+  </div>
+
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header" id="header">
+    <a href="#home" class="logo" data-scroll-to aria-label="STAKD — home">STAKD</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#anatomy" data-scroll-to>The Stack</a>
+      <a href="#menu" data-scroll-to>Menu</a>
+      <a href="#craft" data-scroll-to>Craft</a>
+      <a href="#spots" data-scroll-to>Locations</a>
+    </nav>
+    <div class="header__right">
+      <span class="sound-hint" id="soundHint">Click anywhere for sound</span>
+      <button class="snd is-on" id="soundToggle" aria-label="Mute sound" aria-pressed="true" data-cursor="Mute"><i></i><i></i><i></i><i></i></button>
+      <a href="#reserve" class="btn btn--amber btn--sm" data-scroll-to data-magnetic><span>Reserve</span></a>
+    </div>
+  </header>
+
+  <!-- the burger (transparent WebGL, above section backgrounds, below the UI) -->
+  <canvas class="webgl" id="webgl" aria-hidden="true"></canvas>
+  <div class="labels" id="labels" aria-hidden="true"></div>
+
+  <main>
+    <!-- HERO -->
+    <section class="s hero" id="home">
+      <div class="hero__watermark" aria-hidden="true"><span data-hero-mark>STAKD</span></div>
+      <div class="hero__copy ui">
+        <p class="eyebrow" data-hero>Est. 2026 · Cluj-Napoca</p>
+        <h1 class="hero__title">
+          <span class="line"><span data-hero-line>The smash burger,</span></span>
+          <span class="line"><span data-hero-line><em>taken seriously.</em></span></span>
+        </h1>
+        <div class="hero__ctas" data-hero>
+          <a href="#reserve" class="btn btn--amber" data-scroll-to data-magnetic><span>Reserve a table</span></a>
+          <a href="#menu" class="btn btn--ghost" data-scroll-to data-magnetic><span>See the menu</span></a>
+        </div>
+      </div>
+      <ul class="hero__specs ui" data-hero>
+        <li><span>01</span>Dry-aged chuck<b>45 days</b></li>
+        <li><span>02</span>Brioche, baked at<b>5:00 am</b></li>
+        <li><span>03</span>Flat-top<b>260 °C</b></li>
+        <li><span>04</span>The smash<b>10 seconds</b></li>
+      </ul>
+      <div class="hero__cue ui" data-hero><i></i><span>Scroll to deconstruct</span></div>
+    </section>
+
+    <!-- ANATOMY -->
+    <section class="s anatomy" id="anatomy">
+      <div class="anatomy__pin">
+        <div class="anatomy__head ui">
+          <p class="eyebrow">The Stack</p>
+          <h2 class="h2" data-split>Nine layers.<br /><em>No filler.</em></h2>
+          <p class="anatomy__hint">Scroll faster — it comes apart harder.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATEMENT -->
+    <section class="s statement">
+      <p class="statement__text ui" data-scrub-words>We smash ninety grams of forty-five-day dry-aged chuck onto a 260-degree flat-top, press it for exactly ten seconds — and never touch it again until the edges turn to lace.</p>
+    </section>
+
+    <!-- MENU -->
+    <section class="s menu" id="menu">
+      <div class="menu__pin">
+        <div class="menu__info ui">
+          <p class="eyebrow">The Menu · <span id="menuIndex">01</span> / 04</p>
+          <div class="menu__names" id="menuNames">
+            <h3 class="menu__name is-active">The Classic</h3>
+            <h3 class="menu__name">Double Trouble</h3>
+            <h3 class="menu__name">Hot Honey Chicken</h3>
+            <h3 class="menu__name">The Green</h3>
+          </div>
+          <p class="menu__desc" id="menuDesc">One smashed patty, aged cheddar, house pickles, red onion, heirloom tomato, iceberg, STAKD sauce.</p>
+          <div class="menu__meta">
+            <span class="price" id="menuPrice">€9.50</span>
+            <span class="kcal" id="menuKcal">640 kcal</span>
+            <button class="btn btn--amber btn--sm" id="menuAdd" data-magnetic><span>Add to order</span></button>
+          </div>
+          <div class="menu__progress"><i id="menuBar"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CRAFT -->
+    <section class="s craft" id="craft">
+      <div class="craft__head ui">
+        <p class="eyebrow">Craft</p>
+        <h2 class="h2" data-split>Obsessive about<br /><em>the boring parts.</em></h2>
+      </div>
+      <div class="craft__grid ui">
+        <article class="stat" data-reveal><b><span data-count="45">0</span></b><span class="stat__unit">days</span><p>Our chuck hangs in a salt-block chamber before it is ground twice, every morning.</p></article>
+        <article class="stat" data-reveal><b><span data-count="260">0</span></b><span class="stat__unit">°C</span><p>The flat-top never drops below it. That is where the crust — and the lace — comes from.</p></article>
+        <article class="stat" data-reveal><b><span data-count="0">0</span></b><span class="stat__unit">frozen</span><p>Patties, fries, sauces. Nothing in our kitchen has ever seen a freezer.</p></article>
+      </div>
+      <div class="marquee ui" aria-hidden="true"><div class="marquee__track" id="marquee"><span>Seared <i>✦</i> Stacked <i>✦</i> Served <i>✦</i> Seared <i>✦</i> Stacked <i>✦</i> Served <i>✦</i> </span><span>Seared <i>✦</i> Stacked <i>✦</i> Served <i>✦</i> Seared <i>✦</i> Stacked <i>✦</i> Served <i>✦</i> </span></div></div>
+    </section>
+
+    <!-- LOCATIONS -->
+    <section class="s spots" id="spots">
+      <div class="spots__wrap ui">
+        <p class="eyebrow">Locations</p>
+        <h2 class="h2" data-split>Find the<br /><em>flat-top.</em></h2>
+        <ul class="spots__list">
+          <li class="spot" data-cursor="Map"><span class="spot__num">01</span><span class="spot__city">Cluj-Napoca</span><span class="spot__desc">Str. Memorandumului 21 · open till 02:00 Fri–Sat</span><span class="spot__arrow">↗</span></li>
+          <li class="spot" data-cursor="Map"><span class="spot__num">02</span><span class="spot__city">București</span><span class="spot__desc">Calea Victoriei 88 · open kitchen, 40 seats</span><span class="spot__arrow">↗</span></li>
+          <li class="spot" data-cursor="Map"><span class="spot__num">03</span><span class="spot__city">Iași</span><span class="spot__desc">Bd. Ștefan cel Mare 4 · counter &amp; walk-in</span><span class="spot__arrow">↗</span></li>
+          <li class="spot" data-cursor="Soon"><span class="spot__num">04</span><span class="spot__city">Timișoara</span><span class="spot__desc">Piața Victoriei 2 · opening spring 2027</span><span class="spot__arrow">↗</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- RESERVE -->
+    <section class="s reserve" id="reserve">
+      <p class="reserve__word" aria-hidden="true">HUNGRY</p>
+      <div class="reserve__inner ui">
+        <p class="eyebrow">Reservations</p>
+        <h2 class="reserve__title" data-split>Your table is<br /><em>warming up.</em></h2>
+        <div class="reserve__ctas">
+          <a href="#reserve" class="btn btn--amber btn--xl" id="reserveBtn" data-magnetic data-cursor="Book"><span>Reserve a table</span></a>
+          <a href="#reserve" class="btn btn--ghost btn--xl" id="orderBtn" data-magnetic><span>Order delivery</span></a>
+        </div>
+        <p class="reserve__cart">In your order: <b id="cartCount">0</b> burgers</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__logo" aria-hidden="true">STAKD</div>
+    <div class="footer__row">
+      <span>Smash burgers · Cluj · București · Iași</span>
+      <nav><a href="#">Instagram</a><a href="#">TikTok</a><a href="#">Careers</a></nav>
+      <span>© 2026 STAKD — concept by Edy Studio</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Enable JavaScript to see the burger.</p></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

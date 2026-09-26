@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Villa Solenne — Boutique hotel pe malul mării</title>
+  <meta name="description" content="Villa Solenne — boutique hotel cu unsprezece camere, spa și restaurant pe malul Mării Negre. Pășește înăuntru." />
+  <meta name="theme-color" content="#f4eee6" />
+  <meta property="og:title" content="Villa Solenne — Boutique hotel" />
+  <meta property="og:description" content="Unsprezece camere. O singură mare. Pășește înăuntru." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js",
+      "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/",
+      "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.mjs"
+    }
+  }
+  </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" crossorigin />
+</head>
+<body class="is-loading">
+  <!-- ========== LOADER ========== -->
+  <div class="loader" id="loader">
+    <div class="loader__center">
+      <svg class="loader__mono" viewBox="0 0 120 150" aria-hidden="true">
+        <path d="M10 145 V60 A50 50 0 0 1 110 60 V145" />
+        <path d="M24 145 V64 A36 36 0 0 1 96 64 V145" />
+        <text x="60" y="105" text-anchor="middle">VS</text>
+      </svg>
+      <p class="loader__script">Villa Solenne</p>
+      <p class="loader__pct"><span id="loaderPct">0</span></p>
+    </div>
+  </div>
+
+  <canvas class="webgl" id="webgl" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header" id="header">
+    <button class="menu-btn" id="menuBtn" aria-label="Meniu" aria-expanded="false"><span></span><span></span></button>
+    <a href="#home" class="brand" data-scroll-to aria-label="Villa Solenne">
+      <svg viewBox="0 0 120 150" aria-hidden="true"><path d="M10 145 V60 A50 50 0 0 1 110 60 V145" /><path d="M24 145 V64 A36 36 0 0 1 96 64 V145" /></svg>
+      <span>Villa Solenne</span>
+    </a>
+    <div class="header__right">
+      <div class="lang" role="group" aria-label="Limba"><button class="is-active" data-lang="ro">RO</button><button data-lang="en">EN</button></div>
+      <button class="season-mini" id="seasonMini" aria-label="Schimbă anotimpul" data-cursor="☀ / ❄"><span class="ico">☀</span></button>
+      <span class="sound-hint" id="soundHint" data-i18n="sound.hint">Click oriunde pentru sunet</span>
+      <button class="snd" id="soundToggle" aria-label="Oprește / pornește sunetul" aria-pressed="true" data-cursor="♪"><i></i><i></i><i></i></button>
+      <a href="#book" class="book-btn" data-scroll-to data-magnetic><span data-i18n="book">Rezervă</span></a>
+    </div>
+  </header>
+
+  <nav class="overlay-nav" id="overlayNav" aria-hidden="true">
+    <ol>
+      <li><a href="#home" data-scroll-to><em>00</em><span data-i18n="nav.home">Intrarea</span></a></li>
+      <li><a href="#lobby" data-scroll-to><em>01</em><span data-i18n="nav.lobby">Curtea interioară</span></a></li>
+      <li><a href="#suites" data-scroll-to><em>02</em><span data-i18n="nav.suites">Apartamente</span></a></li>
+      <li><a href="#spa" data-scroll-to><em>03</em><span data-i18n="nav.spa">Spa &amp; piscină</span></a></li>
+      <li><a href="#dining" data-scroll-to><em>04</em><span data-i18n="nav.dining">Restaurant</span></a></li>
+      <li><a href="#book" data-scroll-to><em>05</em><span data-i18n="nav.terrace">Terasa &amp; rezervări</span></a></li>
+    </ol>
+  </nav>
+
+  <div class="room-indicator" id="roomIndicator"><span id="roomNum">00</span><i></i><b id="roomName" data-i18n="nav.home">Intrarea</b></div>
+
+  <main>
+    <!-- HERO -->
+    <section class="sec hero" id="home" data-cam="0">
+      <div class="hero__center">
+        <p class="kicker" data-hero data-i18n="hero.kicker">Boutique hotel · Vama Veche</p>
+        <h1 class="hero__title"><span class="hero__line"><span data-hero-line>Villa</span></span><span class="hero__line"><em data-hero-line>Solenne</em></span></h1>
+        <p class="hero__sub" data-hero data-i18n="hero.sub">Unsprezece camere. O singură mare.</p>
+      </div>
+      <div class="hero__scroll" data-hero><span data-i18n="hero.scroll">Derulează ca să pășești înăuntru</span><i></i></div>
+    </section>
+
+    <!-- THRESHOLD -->
+    <section class="sec threshold" data-cam="1">
+      <p class="quote" data-reveal><span class="script">Benvenuti</span><span data-i18n="threshold.text">Fiecare arcadă e o ușă spre altă stare. Pășește încet.</span></p>
+    </section>
+
+    <!-- LOBBY -->
+    <section class="sec room room--left" id="lobby" data-cam="2" data-room="01|nav.lobby">
+      <article class="card" data-reveal>
+        <p class="card__num">01</p>
+        <h2 class="card__title" data-i18n="lobby.title">Curtea interioară</h2>
+        <p class="card__text" data-i18n="lobby.text">Arcade albe, lămpi de alamă și murmurul unei fântâni. Te întâmpinăm cu o limonadă cu lavandă și cheia camerei — fără cozi, fără grabă.</p>
+        <ul class="card__list"><li data-i18n="lobby.l1">Check-in personalizat, oricând</li><li data-i18n="lobby.l2">Concierge pentru plimbări cu barca</li><li data-i18n="lobby.l3">Bibliotecă și cafea de specialitate</li></ul>
+      </article>
+    </section>
+
+    <!-- SUITES -->
+    <section class="sec room room--right" id="suites" data-cam="3" data-room="02|nav.suites">
+      <article class="card card--wide" data-reveal>
+        <p class="card__num">02</p>
+        <h2 class="card__title" data-i18n="suites.title">Apartamente</h2>
+        <p class="card__text" data-i18n="suites.text">Pereți de var, lenjerii de in și ferestre arcuite care încadrează marea ca pe un tablou.</p>
+        <div class="suites">
+          <button class="suite is-active" data-suite="0"><span class="suite__name" data-i18n="suite.0.name">Deluxe</span><span class="suite__meta" data-i18n="suite.0.meta">28 m² · grădină</span><span class="suite__price"><small data-i18n="from">de la</small> 690 <small>lei</small></span></button>
+          <button class="suite" data-suite="1"><span class="suite__name" data-i18n="suite.1.name">Junior Suite</span><span class="suite__meta" data-i18n="suite.1.meta">42 m² · vedere la mare</span><span class="suite__price"><small data-i18n="from">de la</small> 1.090 <small>lei</small></span></button>
+          <button class="suite" data-suite="2"><span class="suite__name" data-i18n="suite.2.name">Suite Solenne</span><span class="suite__meta" data-i18n="suite.2.meta">64 m² · terasă privată</span><span class="suite__price"><small data-i18n="from">de la</small> 1.690 <small>lei</small></span></button>
+        </div>
+      </article>
+    </section>
+
+    <!-- SPA -->
+    <section class="sec room room--left" id="spa" data-cam="4" data-room="03|nav.spa">
+      <article class="card" data-reveal>
+        <p class="card__num">03</p>
+        <h2 class="card__title" data-i18n="spa.title">Spa &amp; piscină</h2>
+        <p class="card__text" data-i18n="spa.text">Piscină interioară încălzită la 29°C sub bolți de piatră, hammam, saună din cedru și masaje cu uleiuri din Dobrogea.</p>
+        <div class="stats"><div><b>29°</b><span data-i18n="spa.s1">apa din piscină</span></div><div><b>4</b><span data-i18n="spa.s2">cabine de tratament</span></div><div><b>07–22</b><span data-i18n="spa.s3">program zilnic</span></div></div>
+      </article>
+    </section>
+
+    <!-- DINING -->
+    <section class="sec room room--right" id="dining" data-cam="5" data-room="04|nav.dining">
+      <article class="card" data-reveal>
+        <p class="card__num">04</p>
+        <h2 class="card__title"><span data-i18n="dining.title">Restaurant</span> <em>«Lumini»</em></h2>
+        <p class="card__text" data-i18n="dining.text">Pește prins în dimineața aceea, legume de la ferma vecină și vinuri dobrogene, sub o boltă de luminițe.</p>
+        <ul class="card__list"><li data-i18n="dining.l1">Mic dejun până la 12:00</li><li data-i18n="dining.l2">Cină cu meniu degustare, 7 feluri</li><li data-i18n="dining.l3">Bar pe terasă la apus</li></ul>
+      </article>
+    </section>
+
+    <!-- TERRACE + BOOKING -->
+    <section class="sec book" id="book" data-cam="6" data-room="05|nav.terrace">
+      <div class="book__wrap">
+        <p class="script big-script" data-reveal data-i18n="book.script">La dolce vita</p>
+        <h2 class="book__title" data-reveal data-i18n="book.title">Apusul e mai frumos de aici.</h2>
+        <form class="booking" id="booking" data-reveal novalidate>
+          <label><span data-i18n="book.in">Check-in</span><input type="date" id="dateIn" required /></label>
+          <label><span data-i18n="book.out">Check-out</span><input type="date" id="dateOut" required /></label>
+          <label><span data-i18n="book.guests">Oaspeți</span>
+            <select id="guests"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option></select>
+          </label>
+          <button type="submit" class="booking__btn" data-magnetic><span data-i18n="book.check">Verifică disponibilitatea</span></button>
+        </form>
+        <p class="booking__msg" id="bookingMsg" role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" data-cam="7">
+    <div class="footer__grid">
+      <div><p class="footer__label" data-i18n="f.address">Adresă</p><p>Str. Farului 11, Vama Veche<br />Constanța, România</p></div>
+      <div><p class="footer__label" data-i18n="f.contact">Contact</p><p><a href="mailto:stay@villasolenne.ro">stay@villasolenne.ro</a><br />+40 700 000 111</p></div>
+      <div><p class="footer__label" data-i18n="f.follow">Urmărește-ne</p><p><a href="#">Instagram</a> · <a href="#">Pinterest</a></p></div>
+    </div>
+    <p class="footer__word">Villa <em>Solenne</em></p>
+    <p class="footer__small" data-i18n="f.small">© 2026 Villa Solenne · concept de Edy · toate imaginile sunt randate live în browser</p>
+  </footer>
+
+  <noscript><p class="noscript">Activează JavaScript pentru a păși în Villa Solenne.</p></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
