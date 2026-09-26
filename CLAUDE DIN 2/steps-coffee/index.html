@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>10,000 Steps — Coffee, from seed to sip</title>
+  <meta name="description" content="10,000 Steps Coffee. Every cup is a journey — ours is exactly ten thousand steps long. Walk it with us, from the highlands to your cup." />
+  <meta name="theme-color" content="#efe6da" />
+  <meta property="og:title" content="10,000 Steps — Coffee, from seed to sip" />
+  <meta property="og:description" content="Scroll to walk. Stop to freeze time. A 3D journey from the coffee highlands to your cup." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/",
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js",
+      "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/",
+      "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.mjs"
+    }
+  }
+  </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" crossorigin />
+</head>
+<body class="is-loading" data-theme="light">
+  <!-- ========== LOADER ========== -->
+  <div class="loader" id="loader">
+    <div class="loader__top">
+      <span class="loader__brand">10,000 Steps</span>
+      <span class="loader__label" id="loaderLabel">Lacing up</span>
+    </div>
+    <div class="loader__count"><span id="loaderCount">00000</span></div>
+    <div class="loader__bottom">
+      <div class="loader__bar"><span id="loaderBar"></span></div>
+    </div>
+  </div>
+
+  <canvas class="webgl" id="webgl" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header" id="header">
+    <a href="#top" class="brand" data-scroll-to aria-label="10,000 Steps — home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" /><path d="M13 26c3-9 11-3 14-12" /><circle cx="14" cy="14" r="2.2" class="dot" /><circle cx="26" cy="27" r="2.2" class="dot" /></svg>
+      <span>10,000 Steps</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#journey" data-scroll-to>The Walk</a>
+      <a href="#menu" data-scroll-to>Menu</a>
+      <a href="#beans" data-scroll-to>Beans</a>
+      <a href="#visit" data-scroll-to>Visit</a>
+    </nav>
+    <div class="header__right">
+      <span class="sound-hint" id="soundHint">Click anywhere for sound</span>
+      <button class="sound" id="soundToggle" aria-label="Mute / unmute" aria-pressed="true" data-cursor="Mute"><i></i><i></i><i></i><i></i><i></i></button>
+      <button class="pill pill--solid pill--sm" id="cartBtn" data-magnetic><span>Bag · <b id="cartCount">0</b></span></button>
+    </div>
+  </header>
+
+  <!-- ========== HUD ========== -->
+  <aside class="hud" aria-label="Walk progress">
+    <span class="hud__steps"><b id="stepCount">00,000</b><small>/ 10,000 steps</small></span>
+    <span class="hud__bar"><i id="stepBar"></i></span>
+    <span class="hud__pace" id="pace"><i></i><span id="paceText">Paused · time frozen</span></span>
+    <span class="hud__chapter"><span id="chapterNum">00</span><b id="chapterName">Start</b></span>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="top" data-cam="0" data-theme="light">
+      <div class="hero__inner">
+        <p class="kicker" data-hero>Specialty coffee · roasted in Cluj</p>
+        <h1 class="hero__title" aria-label="10,000 Steps">
+          <span class="hero__row"><span data-hero-line>10,000</span></span>
+          <span class="hero__row hero__row--2"><span data-hero-line>Steps</span><em data-hero-line>from seed to sip</em></span>
+        </h1>
+        <div class="hero__foot">
+          <p class="hero__lead" data-hero>Every cup is a journey. Ours is exactly ten thousand steps long — scroll to walk it with us. Stop, and time freezes mid-drop.</p>
+          <div class="hero__ctas" data-hero>
+            <a href="#journey" class="pill pill--solid" data-scroll-to data-magnetic><span>Start walking ↓</span></a>
+            <a href="#menu" class="pill" data-scroll-to data-magnetic><span>Skip to the cup</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="journey">
+      <!-- CH 1 -->
+      <section class="chapter" data-cam="1" data-theme="light" data-chapter="01|Seed" data-steps="1200">
+        <div class="chapter__card">
+          <p class="chapter__steps"><b>1,200</b> steps</p>
+          <h2 class="chapter__title" data-split>Seed.</h2>
+          <p class="chapter__sub" data-reveal><em>It starts 1,800 metres up.</em></p>
+          <p class="chapter__text" data-reveal>On the terraced slopes of Huila, Colombia, every seedling is planted by hand. Coffee grows slowly up here — and slow is exactly the point.</p>
+          <ul class="facts" data-reveal><li><b>1,800 m</b><span>altitude</span></li><li><b>4 yrs</b><span>to first harvest</span></li><li><b>31</b><span>partner farms</span></li></ul>
+        </div>
+      </section>
+
+      <!-- CH 2 -->
+      <section class="chapter chapter--right" data-cam="2" data-theme="light" data-chapter="02|Cherry" data-steps="3400">
+        <div class="chapter__card">
+          <p class="chapter__steps"><b>3,400</b> steps</p>
+          <h2 class="chapter__title" data-split>Cherry.</h2>
+          <p class="chapter__sub" data-reveal><em>Picked ripe. Only ripe.</em></p>
+          <p class="chapter__text" data-reveal>Pickers pass each tree up to seven times, choosing cherries at their sweetest. It takes about 2,000 of them to make a single kilo of coffee.</p>
+          <ul class="facts" data-reveal><li><b>7×</b><span>passes per tree</span></li><li><b>2,000</b><span>cherries per kilo</span></li><li><b>22°Bx</b><span>sugar at picking</span></li></ul>
+        </div>
+      </section>
+
+      <!-- CH 3 -->
+      <section class="chapter" data-cam="3" data-theme="light" data-chapter="03|Sun" data-steps="5600">
+        <div class="chapter__card">
+          <p class="chapter__steps"><b>5,600</b> steps</p>
+          <h2 class="chapter__title" data-split>Sun.</h2>
+          <p class="chapter__sub" data-reveal><em>Twenty days of patience.</em></p>
+          <p class="chapter__text" data-reveal>Raised African beds, turned by hand every hour, dried under the high-altitude sun. Scroll faster — watch the beans jump.</p>
+          <ul class="facts" data-reveal><li><b>20 days</b><span>drying</span></li><li><b>11%</b><span>final moisture</span></li><li><b>every hour</b><span>turned by hand</span></li></ul>
+        </div>
+      </section>
+
+      <!-- CH 4 -->
+      <section class="chapter chapter--right" data-cam="4" data-theme="dark" data-chapter="04|Fire" data-steps="7800">
+        <div class="chapter__card">
+          <p class="chapter__steps"><b>7,800</b> steps</p>
+          <h2 class="chapter__title" data-split>Fire.</h2>
+          <p class="chapter__sub" data-reveal><em>212°C and a sixth sense.</em></p>
+          <p class="chapter__text" data-reveal>Small batches in our 15 kg drum roaster. First crack at minute nine — we pull the beans the second the room smells like dark chocolate and stone fruit.</p>
+          <ul class="facts" data-reveal><li><b>212°C</b><span>drop temp</span></li><li><b>9:40</b><span>first crack</span></li><li><b>15 kg</b><span>per batch</span></li></ul>
+        </div>
+      </section>
+
+      <!-- CH 5 -->
+      <section class="chapter chapter--center" data-cam="5" data-theme="light" data-chapter="05|Cup" data-steps="10000">
+        <div class="chapter__card chapter__card--center">
+          <p class="chapter__steps"><b>10,000</b> steps</p>
+          <h2 class="chapter__title chapter__title--xl" data-split>You made it.</h2>
+          <p class="chapter__text" data-reveal>Ten thousand steps later, one drop falls into your cup. Worth every single one.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- MENU -->
+    <section class="block menu" id="menu" data-cam="6" data-theme="light" data-chapter="06|Menu">
+      <div class="block__head">
+        <p class="kicker" data-reveal>At the bar</p>
+        <h2 class="block__title" data-split>Short walk, <em>long finish.</em></h2>
+      </div>
+      <div class="menu__grid">
+        <article class="drink" data-reveal data-tilt>
+          <div class="drink__art" style="--c1:#2b1a12;--c2:#6b3a1e"><span class="drink__steps">2,000</span></div>
+          <h3>Espresso</h3>
+          <p>Summit blend. Dark chocolate, cherry, long finish.</p>
+          <div class="drink__foot"><b>€2.8</b><button class="add" data-add="Espresso" data-cursor="Add">+</button></div>
+        </article>
+        <article class="drink" data-reveal data-tilt>
+          <div class="drink__art" style="--c1:#c89b6d;--c2:#f1e2cf"><span class="drink__steps">4,500</span></div>
+          <h3>Flat White</h3>
+          <p>Double ristretto, silky micro-foam, zero sugar needed.</p>
+          <div class="drink__foot"><b>€3.9</b><button class="add" data-add="Flat White" data-cursor="Add">+</button></div>
+        </article>
+        <article class="drink" data-reveal data-tilt>
+          <div class="drink__art" style="--c1:#1d130e;--c2:#c65d3b"><span class="drink__steps">7,000</span></div>
+          <h3>Ember Tonic</h3>
+          <p>Espresso over tonic, blood orange and a smoked rosemary sprig.</p>
+          <div class="drink__foot"><b>€4.6</b><button class="add" data-add="Ember Tonic" data-cursor="Add">+</button></div>
+        </article>
+        <article class="drink" data-reveal data-tilt>
+          <div class="drink__art" style="--c1:#e9dcc8;--c2:#8a9a7b"><span class="drink__steps">10,000</span></div>
+          <h3>Cold Walk</h3>
+          <p>18-hour cold brew, oat milk, a whisper of maple.</p>
+          <div class="drink__foot"><b>€4.2</b><button class="add" data-add="Cold Walk" data-cursor="Add">+</button></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- BEANS -->
+    <section class="block beans" id="beans" data-cam="7" data-theme="light" data-chapter="07|Beans">
+      <div class="block__head">
+        <p class="kicker" data-reveal>Take the walk home</p>
+        <h2 class="block__title" data-split>Three roasts. <em>Three trails.</em></h2>
+      </div>
+      <div class="bags">
+        <article class="bag" data-reveal data-tilt style="--bag:#e7b7a0;--ink:#3b1d12">
+          <div class="bag__pack"><span class="bag__name">Dawn</span><span class="bag__origin">Ethiopia · Guji</span><span class="bag__steps">Light roast</span></div>
+          <div class="bag__info"><h3>Dawn</h3><p>Jasmine, peach, bergamot</p><div class="bag__buy"><b>€16 · 250 g</b><button class="pill pill--solid pill--sm" data-add="Dawn 250g" data-magnetic><span>Add to bag</span></button></div></div>
+        </article>
+        <article class="bag" data-reveal data-tilt style="--bag:#c65d3b;--ink:#fff3e8">
+          <div class="bag__pack"><span class="bag__name">Summit</span><span class="bag__origin">Colombia · Huila</span><span class="bag__steps">Medium roast</span></div>
+          <div class="bag__info"><h3>Summit</h3><p>Caramel, red cherry, cocoa</p><div class="bag__buy"><b>€15 · 250 g</b><button class="pill pill--solid pill--sm" data-add="Summit 250g" data-magnetic><span>Add to bag</span></button></div></div>
+        </article>
+        <article class="bag" data-reveal data-tilt style="--bag:#2b1a12;--ink:#f3e6d6">
+          <div class="bag__pack"><span class="bag__name">Ember</span><span class="bag__origin">Brazil · Cerrado</span><span class="bag__steps">Dark roast</span></div>
+          <div class="bag__info"><h3>Ember</h3><p>Dark chocolate, hazelnut, molasses</p><div class="bag__buy"><b>€14 · 250 g</b><button class="pill pill--solid pill--sm" data-add="Ember 250g" data-magnetic><span>Add to bag</span></button></div></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISIT -->
+    <section class="block visit" id="visit" data-cam="8" data-theme="light" data-chapter="08|Visit">
+      <div class="visit__wrap">
+        <p class="kicker" data-reveal>Walk in</p>
+        <h2 class="block__title block__title--xl" data-split>The last step is <em>yours.</em></h2>
+        <div class="places">
+          <a class="place" href="#" data-reveal data-cursor="Map"><span class="place__city">Cluj-Napoca</span><span class="place__addr">Piața Muzeului 4 · 7:30–19:00</span><span class="place__arrow">→</span></a>
+          <a class="place" href="#" data-reveal data-cursor="Map"><span class="place__city">București</span><span class="place__addr">Str. Covaci 12 · 8:00–20:00</span><span class="place__arrow">→</span></a>
+          <a class="place" href="#" data-reveal data-cursor="Map"><span class="place__city">Timișoara</span><span class="place__addr">Piața Unirii 9 · 8:00–18:00</span><span class="place__arrow">→</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" data-theme="light">
+    <div class="footer__big" aria-hidden="true">10,000<br />Steps</div>
+    <div class="footer__row">
+      <span>© 2026 10,000 Steps Coffee — a concept by Edy.</span>
+      <span>Scroll speed = time speed. Please walk responsibly.</span>
+      <a href="#top" data-scroll-to>Back to step 0 ↑</a>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Enable JavaScript to walk the 10,000 steps.</p></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

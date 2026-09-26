@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>relay</title>
+<script>
+  // dev-only: receives {path, body} via postMessage and saves it through serve.ps1
+  addEventListener('message', async (e) => {
+    const { path, body, id } = e.data || {};
+    if (!path) return;
+    let status = 0;
+    try {
+      const r = await fetch('/__save/' + path, { method: 'POST', body });
+      status = r.status;
+    } catch (err) {
+      status = -1;
+    }
+    e.source.postMessage({ id, status }, '*');
+  });
+  parent.postMessage({ ready: true }, '*');
+</script>
